@@ -3,8 +3,6 @@ import strformat
 
 when isMainModule:
   let argc = paramCount()
-  let argv = commandLineParams()
-
   assert(argc == 1)
 
   echo &"""
@@ -12,6 +10,11 @@ when isMainModule:
 
   section .text
     _main:
-      mov rax, {argv[0]}
+  """
+
+  let input: string = commandLineParams()[0]
+
+  echo &"""
+      mov rax, {input}
       ret
   """
