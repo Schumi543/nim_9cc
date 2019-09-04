@@ -8,9 +8,10 @@ when isMainModule:
   assert(argc == 1)
 
   echo &"""
-  .intel_syntax noprefix
-  .global main
-  main:
-    mov rax, {argv[0]}
-    ret
+  global _main
+
+  section .text
+    _main:
+      mov rax, {argv[0]}
+      ret
   """
