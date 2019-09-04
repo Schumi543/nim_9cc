@@ -7,8 +7,10 @@ when isMainModule:
 
   assert(argc == 1)
 
-  echo(".intel_syntax noprefix");
-  echo(".global main");
-  echo("main:");
-  echo(&"  mov rax, {argv[0]}");
-  echo("  ret");
+  echo &"""
+  .intel_syntax noprefix
+  .global main
+  main:
+    mov rax, {argv[0]}
+    ret
+  """
