@@ -18,7 +18,7 @@ when isMainModule:
   var isFirstNum: bool = true
   var line: string = "      "
 
-  for token in tokenize(input, {'+', '*'}):
+  for token in tokenize(input, {'+', '-'}):
     if isFirstNum:
       doAssert(not token.issep)
       echo &"      mov rax, {token.token}"
@@ -29,8 +29,8 @@ when isMainModule:
         case token.token:
           of "+":
             line &= "add rax, "
-          of "*":
-            line &= "mov rax, "
+          of "-":
+            line &= "sub rax, "
 
       else:
         doAssert(token.token.isDigit)
