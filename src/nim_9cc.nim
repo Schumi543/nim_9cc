@@ -20,12 +20,12 @@ when isMainModule:
 
   for token in tokenize(input, {'+', '-'}):
     if isFirstNum:
-      doAssert(not token.issep)
+      doAssert(not token.issep, "input must start with Num")
       echo &"      mov rax, {token.token}"
       isFirstNum = false
     else:
       if token.issep:
-        doAssert(line == "      ")
+        doAssert(line == "      ", &"line is invalid: {line}, there maybe more than two sequential operators in input")
         case token.token:
           of "+":
             line &= "add rax, "
@@ -33,7 +33,7 @@ when isMainModule:
             line &= "sub rax, "
 
       else:
-        doAssert(token.token.isDigit)
+        doAssert(token.token.isDigit, &"expect digit, but got {token.token}")
         echo line & token.token
         line = "      "
 
