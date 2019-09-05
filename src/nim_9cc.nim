@@ -13,7 +13,7 @@ when isMainModule:
     _main:
   """
 
-  let input: string = commandLineParams()[0]
+  let input: string = commandLineParams()[0].replace(" ", "")
 
   var isFirstNum: bool = true
   var line: string = "      "
