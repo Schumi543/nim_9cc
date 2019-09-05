@@ -34,6 +34,6 @@ when isMainModule:
 
       else:
         echo line & token.token
-        line = "    "
+        line = "      "
 
   echo "  ret"
