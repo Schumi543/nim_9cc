@@ -33,6 +33,7 @@ when isMainModule:
             line &= "mov rax, "
 
       else:
+        doAssert(token.token.isDigit)
         echo line & token.token
         line = "      "
 
