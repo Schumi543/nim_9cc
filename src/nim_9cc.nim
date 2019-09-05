@@ -4,7 +4,7 @@ import strutils
 
 when isMainModule:
   let argc = paramCount()
-  assert(argc == 1)
+  doAssert(argc == 1)
 
   echo &"""
   global _main
