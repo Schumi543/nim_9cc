@@ -1,7 +1,7 @@
 #!/bin/bash
 try() {
-  expected="$1"
-  input="$2"
+  input="$1"
+  expected="$2"
 
   ./src/nim_9cc "$input" >./tmp.asm
   nasm -f macho64 tmp.asm -o tmp.o
@@ -19,6 +19,6 @@ try() {
 
 try 0 0
 try 42 42
-try 8 5+3
+try 5+3 8
 
 echo OK
