@@ -1,6 +1,8 @@
 import os
 import strformat
 import strutils
+from tokenizer import tokenize, at_eof, expect_number, expect, consume, Token
+import lists
 
 when isMainModule:
   let argc = paramCount()
@@ -15,26 +17,17 @@ when isMainModule:
 
   let input: string = commandLineParams()[0].replace(" ", "")
 
-  var isFirstNum: bool = true
-  var line: string = "      "
+  let simbol = {'+', '-'}
+  let tokenized_input: SinglyLinkedList[Token] = tokenize(input, simbol)
+  var cur: SinglyLinkedNode[Token] = tokenized_input.head
 
-  for token in tokenize(input, {'+', '-'}):
-    if isFirstNum:
-      doAssert(not token.issep, "input must start with Num")
-      echo &"      mov rax, {token.token}"
-      isFirstNum = false
-    else:
-      if token.issep:
-        doAssert(line == "      ", &"line is invalid: {line}, there maybe more than two sequential operators in input")
-        case token.token:
-          of "+":
-            line &= "add rax, "
-          of "-":
-            line &= "sub rax, "
+  echo &"      mov rax, {expect_number(cur)}"
 
-      else:
-        doAssert(token.token.isDigit, &"expect digit, but got {token.token}")
-        echo line & token.token
-        line = "      "
+  while not cur.isNil:
+    if consume(cur, "+"):
+      echo &"      add rax, {expect_number(cur)}"
+    elif consume(cur, "-"):
+      echo &"      sub rax, {expect_number(cur)}"
+    else: doAssert(false, &"token is unexpected: {cur[].value[]}")
 
   echo "  ret"
