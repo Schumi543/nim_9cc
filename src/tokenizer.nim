@@ -70,13 +70,13 @@ proc expect_number*(cur: var SinglyLinkedNode[Token]): string =
     cur = cur.next
     return token.str.get
 
-proc expect*(cur: var SinglyLinkedNode[Token], op: string): string =
+proc expect*(cur: var SinglyLinkedNode[Token], op: TokenKind): string =
     let token = cur[].value[]
 
     echo token
 
     doAssert(token.kind != tkNum, &"token is {token}")
-    doAssert token.str.get == op
+    doAssert token.kind == op
 
     cur = cur.next
     return token.str.get
