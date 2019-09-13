@@ -7,7 +7,11 @@ from system import newException
 type TokenKind = enum
     tkPlus
     tkMinus
+    tkStar
+    tkSlash
     tkNum
+    tkParethesisL
+    tkParethesisR
 
 type Token* = ref object of RootObj
     kind: TokenKind
@@ -20,6 +24,14 @@ proc judge_token_kind(s: string): TokenKind =
             return tkPlus
         of "-":
             return tkMinus
+        of "*":
+            return tkStar
+        of "/":
+            return tkSlash
+        of "(":
+            return tkParethesisL
+        of ")":
+            return tkParethesisR
         else:
             if isDigit(s): # FIXME isDigit is deprecated method
                 return tkNum
