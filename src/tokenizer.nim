@@ -1,5 +1,5 @@
 import lists
-from strutils import tokenize, parseInt, replace, isDigit
+from strutils import parseInt, replace, isDigit
 import strformat
 import options
 from system import newException
@@ -17,6 +17,21 @@ type Token* = ref object of RootObj
     kind: TokenKind
     str*: Option[string] # accessible for test
 
+const
+    Whitespace* = {' ', '\t', '\v', '\r', '\l', '\f'}
+iterator tokenize(s: string, seps: set[char] = Whitespace): tuple[
+    token: string, isSep: bool] =
+    var i = 0
+    while true:
+        var j = 0
+        var isSep = i+j < s.len and s[i+j] in seps
+        while i+j < s.len and (s[i+j] in seps) == isSep and (if isSep and j >
+                0: s[i+j] == s[i+j-1] else: true): inc(j)
+        if j > 0:
+            yield (substr(s, i, i+j-1), isSep)
+        else:
+            break
+        i += j
 
 proc judge_token_kind(s: string): TokenKind =
     case s:
