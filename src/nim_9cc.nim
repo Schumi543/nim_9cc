@@ -2,6 +2,7 @@ import os
 import strformat
 import strutils
 from tokenizer import tokenize, at_eof, expect_number, expect, consume, Token, TokenKind
+from parser import gen, expr
 import lists
 
 when isMainModule:
@@ -21,13 +22,8 @@ when isMainModule:
   let tokenized_input: SinglyLinkedList[Token] = tokenize(input, simbol)
   var cur: SinglyLinkedNode[Token] = tokenized_input.head
 
-  echo &"      mov rax, {cur.expect_number()}"
+  let node = expr(cur)
+  node.gen()
 
-  while not cur.isNil:
-    if cur.consume(tkPlus):
-      echo &"      add rax, {cur.expect_number()}"
-    elif cur.consume(tkMinus):
-      echo &"      sub rax, {cur.expect_number()}"
-    else: doAssert(false, &"token is unexpected: {cur[].value[]}")
-
-  echo "  ret"
+  echo "pop rax".indent(6)
+  echo "ret".indent(2)
