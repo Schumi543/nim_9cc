@@ -10,8 +10,8 @@ type TokenKind* = enum
     tkStar
     tkSlash
     tkNum
-    tkParethesisL
-    tkParethesisR
+    tkParenthesisL
+    tkParenthesisR
 
 type Token* = ref object of RootObj
     kind: TokenKind
@@ -29,9 +29,9 @@ proc judge_token_kind(s: string): TokenKind =
         of "/":
             return tkSlash
         of "(":
-            return tkParethesisL
+            return tkParenthesisL
         of ")":
-            return tkParethesisR
+            return tkParenthesisR
         else:
             if isDigit(s): # FIXME isDigit is deprecated method
                 return tkNum
