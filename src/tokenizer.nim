@@ -1,19 +1,33 @@
 import lists
-from strutils import tokenize, parseInt, replace
+from strutils import tokenize, parseInt, replace, isDigit
 import strformat
 import options
+from system import newException
 
 type TokenKind = enum
-    Reserved
-    Num
+    tkPlus
+    tkMinus
+    tkNum
 
 type Token* = ref object of RootObj
     kind: TokenKind
     str*: Option[string] # accessible for test
 
 
+proc judge_token_kind(s: string): TokenKind =
+    case s:
+        of "+":
+            return tkPlus
+        of "-":
+            return tkMinus
+        else:
+            if isDigit(s): # FIXME isDigit is deprecated method
+                return tkNum
+            else:
+                raise newException(ValueError, &"unexpected token: {s}")
+
 proc new_token(isSep: bool, str: string): Token =
-    return Token(kind: if isSep: Reserved else: Num, str: some(str))
+    return Token(kind: judge_token_kind(str), str: some(str))
 
 
 proc tokenize*(input: string, simbols: set[char]): SinglyLinkedList[Token] =
@@ -30,7 +44,7 @@ proc tokenize*(input: string, simbols: set[char]): SinglyLinkedList[Token] =
 proc consume*(cur: var SinglyLinkedNode[Token], expected: string): bool =
     let token = cur[].value[]
 
-    if token.kind != Reserved or token.str.get != expected:
+    if token.str.get != expected:
         return false
     else:
         cur = cur.next
@@ -39,7 +53,7 @@ proc consume*(cur: var SinglyLinkedNode[Token], expected: string): bool =
 proc expect_number*(cur: var SinglyLinkedNode[Token]): string =
     let token = cur[].value[]
 
-    doAssert(token.kind == Num, &"token is {token}")
+    doAssert(token.kind == tkNum, &"token is {token}")
 
     cur = cur.next
     return token.str.get
@@ -49,7 +63,7 @@ proc expect*(cur: var SinglyLinkedNode[Token], op: string): string =
 
     echo token
 
-    doAssert(token.kind == Reserved, &"token is {token}")
+    doAssert(token.kind != tkNum, &"token is {token}")
     doAssert token.str.get == op
 
     cur = cur.next
