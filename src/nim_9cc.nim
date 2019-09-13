@@ -18,7 +18,7 @@ when isMainModule:
 
   let input: string = commandLineParams()[0].replace(" ", "")
 
-  let simbol = {'+', '-'}
+  let simbol = {'+', '-', '*', '/', '(', ')'}
   let tokenized_input: SinglyLinkedList[Token] = tokenize(input, simbol)
   var cur: SinglyLinkedNode[Token] = tokenized_input.head
 
