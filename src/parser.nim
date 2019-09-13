@@ -22,11 +22,11 @@ proc unary(cur: var SinglyLinkedNode[Token]): Node
 proc primary(cur: var SinglyLinkedNode[Token]): Node
 
 proc expr*(cur: var SinglyLinkedNode[Token]): Node =
-  var node = cur.mul() # 1, consume 12
+  var node = cur.mul()
 
   while not cur.isNil:
-    if cur.consume(tkPlus): # 2. consume +
-      node = Node(kind: ndAdd, lhs: node, rhs: cur.mul()) # 3 consume23 node = 12 + 23 #4 node = (12+23) +34
+    if cur.consume(tkPlus):
+      node = Node(kind: ndAdd, lhs: node, rhs: cur.mul())
     elif cur.consume(tkMinus):
       node = Node(kind: ndSub, lhs: node, rhs: cur.mul())
     else:
