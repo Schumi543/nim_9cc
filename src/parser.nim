@@ -16,17 +16,10 @@ type Node = ref object of RootObj
   rhs: Node
   num: int
 
-proc mul(cur: var SinglyLinkedNode[Token]): Node
 proc expr*(cur: var SinglyLinkedNode[Token]): Node
-proc primary(cur: var SinglyLinkedNode[Token]): Node
+proc mul(cur: var SinglyLinkedNode[Token]): Node
 proc unary(cur: var SinglyLinkedNode[Token]): Node
-
-proc unary(cur: var SinglyLinkedNode[Token]): Node =
-  if cur.consume(tkPlus):
-    return cur.primary()
-  if cur.consume(tkMinus):
-    return Node(kind: ndSub, lhs: Node(kind: ndNum, num: 0), rhs: cur.primary()) # 0 - x
-  return cur.primary()
+proc primary(cur: var SinglyLinkedNode[Token]): Node
 
 proc expr*(cur: var SinglyLinkedNode[Token]): Node =
   var node = cur.mul() # 1, consume 12
@@ -53,6 +46,13 @@ proc mul(cur: var SinglyLinkedNode[Token]): Node =
       return node
 
   return node
+
+proc unary(cur: var SinglyLinkedNode[Token]): Node =
+  if cur.consume(tkPlus):
+    return cur.primary()
+  if cur.consume(tkMinus):
+    return Node(kind: ndSub, lhs: Node(kind: ndNum, num: 0), rhs: cur.primary()) # 0 - x
+  return cur.primary()
 
 proc primary(cur: var SinglyLinkedNode[Token]): Node =
   if cur.consume(tkParenthesisL):
