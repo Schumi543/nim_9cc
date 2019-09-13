@@ -21,13 +21,13 @@ when isMainModule:
   let tokenized_input: SinglyLinkedList[Token] = tokenize(input, simbol)
   var cur: SinglyLinkedNode[Token] = tokenized_input.head
 
-  echo &"      mov rax, {expect_number(cur)}"
+  echo &"      mov rax, {cur.expect_number()}"
 
   while not cur.isNil:
-    if consume(cur, "+"):
-      echo &"      add rax, {expect_number(cur)}"
-    elif consume(cur, "-"):
-      echo &"      sub rax, {expect_number(cur)}"
+    if cur.consume("+"):
+      echo &"      add rax, {cur.expect_number()}"
+    elif cur.consume("-"):
+      echo &"      sub rax, {cur.expect_number()}"
     else: doAssert(false, &"token is unexpected: {cur[].value[]}")
 
   echo "  ret"
