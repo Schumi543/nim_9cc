@@ -1,7 +1,7 @@
 import os
 import strformat
 import strutils
-from tokenizer import tokenize, at_eof, expect_number, expect, consume, Token
+from tokenizer import tokenize, at_eof, expect_number, expect, consume, Token, TokenKind
 import lists
 
 when isMainModule:
@@ -24,9 +24,9 @@ when isMainModule:
   echo &"      mov rax, {cur.expect_number()}"
 
   while not cur.isNil:
-    if cur.consume("+"):
+    if cur.consume(tkPlus):
       echo &"      add rax, {cur.expect_number()}"
-    elif cur.consume("-"):
+    elif cur.consume(tkMinus):
       echo &"      sub rax, {cur.expect_number()}"
     else: doAssert(false, &"token is unexpected: {cur[].value[]}")
 

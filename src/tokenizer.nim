@@ -4,7 +4,7 @@ import strformat
 import options
 from system import newException
 
-type TokenKind = enum
+type TokenKind* = enum
     tkPlus
     tkMinus
     tkStar
@@ -53,10 +53,10 @@ proc tokenize*(input: string, simbols: set[char]): SinglyLinkedList[Token] =
     return ret
 
 
-proc consume*(cur: var SinglyLinkedNode[Token], expected: string): bool =
+proc consume*(cur: var SinglyLinkedNode[Token], expected: TokenKind): bool =
     let token = cur[].value[]
 
-    if token.str.get != expected:
+    if token.kind != expected:
         return false
     else:
         cur = cur.next
