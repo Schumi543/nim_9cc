@@ -1,7 +1,7 @@
 
 import parser
 import lists
-import tokenizer
+import lexer
 import unittest
 
 suite "parser":

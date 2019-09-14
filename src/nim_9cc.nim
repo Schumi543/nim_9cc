@@ -2,7 +2,7 @@ import os
 import strformat
 import strutils
 import token, tokenkind
-import tokenizer
+import lexer
 from parser import gen, expr
 import lists
 
@@ -18,7 +18,7 @@ when isMainModule:
   """
 
   let input: string = commandLineParams()[0].replace(" ", "")
-  var lex = tokenizer.newLexer(input)
+  var lex = newLexer(input)
 
   let tokenized_input: SinglyLinkedList[Token] = lex.scanTokens()
   var cur: SinglyLinkedNode[Token] = tokenized_input.head
