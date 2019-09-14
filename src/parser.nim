@@ -7,8 +7,8 @@ import token, tokenkind
 type NodeKind = enum
   ndAdd
   ndSub
-  ndMul # mul is proc
-  ndDiv # div is keyword
+  ndMul
+  ndDiv
   ndNum
 
 type Node = ref object of RootObj
