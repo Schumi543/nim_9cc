@@ -7,7 +7,7 @@ import tokenkind
 
 type Token* = ref object of RootObj
     kind: TokenKind
-    lexeme*: string # accessible for test
+    lexeme: string
 
 proc `$`*(tk: Token): string =
     return &"[kind: {tk.kind}, lexeme: {tk.lexeme}]"
@@ -26,29 +26,17 @@ proc newLexer*(source: string): Lexer =
     )
 
 proc isAtEOF(lex: Lexer): bool =
-    # Check if EOF reached
     return lex.current >= lex.source.len
 
 proc advance(lex: var Lexer): char {.discardable.} =
-    # increment current
     lex.current.inc()
     return lex.source[lex.current-1]
 
 proc peek(lex: var Lexer): char =
-    # Returns the current char without moving to the next one
     return if lex.isAtEOF(): '\0' else: lex.source[lex.current]
 
 proc peekNext(lex: var Lexer): char =
     return if lex.current + 1 >= lex.source.len: '\0' else: lex.source[lex.current+1]
-
-proc match(lex: var Lexer, expected: char): bool =
-    result = true
-    if lex.isAtEOF() or lex.source[lex.current] != expected:
-        result = false
-    else:
-        # Match found and increment position.
-        # Group current & previous chars into a single tokenKind
-        lex.current.inc()
 
 template addToken(lex: var Lexer, tkKind: TokenKind) =
     # Add token along with metadata
@@ -105,8 +93,6 @@ proc scanToken(lex: var Lexer): TokenKind {.discardable.} =
                         &"unexpected token: {lex.source[lex.start..lex.current]}")
 
 proc scanTokens*(lex: var Lexer): SinglyLinkedList[Token] =
-    # ScanTokens keeps scanning the source code untils it find the EOF delimiter.
-    # It returns a seq of tokens that represents the entire source code.
     lex.tokens = initSinglyLinkedList[Token]()
     while not lex.isAtEOF():
         lex.start = lex.current
@@ -119,21 +105,6 @@ proc scanTokens*(lex: var Lexer): SinglyLinkedList[Token] =
         )
     )
     return lex.tokens
-
-# proc newToken(lexeme: string): Token =
-#     return Token(kind: scanToken(lexeme), lexeme: lexeme)
-
-
-# proc tokenize*(input: string, simbols: set[char]): SinglyLinkedList[Token] =
-#     let trimmed_input = input.replace(" ", "")
-#     var ret = initSinglyLinkedList[Token]()
-#     for token in tokenize(trimmed_input, simbols):
-#         var t = new_token(token.token)
-#         var cur = newSinglyLinkedNode[Token](t)
-#         ret.append(cur)
-
-#     return ret
-
 
 proc consume*(cur: var SinglyLinkedNode[Token], expected: TokenKind): bool =
     let token = cur[].value[]
