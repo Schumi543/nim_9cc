@@ -53,7 +53,7 @@ proc judge_token_kind(s: string): TokenKind =
             else:
                 raise newException(ValueError, &"unexpected token: {s}")
 
-proc new_token(isSep: bool, str: string): Token =
+proc new_token(str: string): Token =
     return Token(kind: judge_token_kind(str), str: some(str))
 
 
@@ -61,7 +61,7 @@ proc tokenize*(input: string, simbols: set[char]): SinglyLinkedList[Token] =
     let trimmed_input = input.replace(" ", "")
     var ret = initSinglyLinkedList[Token]()
     for token in tokenize(trimmed_input, simbols):
-        var t = new_token(token.isSep, token.token)
+        var t = new_token(token.token)
         var cur = newSinglyLinkedNode[Token](t)
         ret.append(cur)
 
