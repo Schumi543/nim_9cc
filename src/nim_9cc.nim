@@ -1,7 +1,8 @@
 import os
 import strformat
 import strutils
-from tokenizer import tokenize, at_eof, expect_number, expect, consume, Token, TokenKind
+import tokenkind
+from tokenizer import tokenize, at_eof, expect_number, expect, consume, Token
 from parser import gen, expr
 import lists
 

@@ -1,7 +1,8 @@
-from tokenizer import consume, expect, expect_number, Token, TokenKind
+from tokenizer import consume, expect, expect_number, Token
 import strformat
 from strutils import parseInt, indent
 import lists
+import tokenkind
 
 type NodeKind = enum
   ndAdd

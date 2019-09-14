@@ -3,15 +3,7 @@ from strutils import parseInt, replace, isDigit
 import strformat
 import options
 from system import newException
-
-type TokenKind* = enum
-    tkPlus
-    tkMinus
-    tkStar
-    tkSlash
-    tkNum
-    tkParenthesisL
-    tkParenthesisR
+import tokenkind
 
 type Token* = ref object of RootObj
     kind: TokenKind
