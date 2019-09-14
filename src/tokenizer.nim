@@ -15,7 +15,7 @@ type TokenKind* = enum
 
 type Token* = ref object of RootObj
     kind: TokenKind
-    str*: Option[string] # accessible for test
+    lexeme*: Option[string] # accessible for test
 
 const
     Whitespace* = {' ', '\t', '\v', '\r', '\l', '\f'}
@@ -53,8 +53,8 @@ proc judge_token_kind(s: string): TokenKind =
             else:
                 raise newException(ValueError, &"unexpected token: {s}")
 
-proc new_token(str: string): Token =
-    return Token(kind: judge_token_kind(str), str: some(str))
+proc new_token(lexeme: string): Token =
+    return Token(kind: judge_token_kind(lexeme), lexeme: some(lexeme))
 
 
 proc tokenize*(input: string, simbols: set[char]): SinglyLinkedList[Token] =
@@ -83,7 +83,7 @@ proc expect_number*(cur: var SinglyLinkedNode[Token]): string =
     doAssert(token.kind == tkNum, &"token is {token}")
 
     cur = cur.next
-    return token.str.get
+    return token.lexeme.get
 
 proc expect*(cur: var SinglyLinkedNode[Token], op: TokenKind): string =
     let token = cur[].value[]
@@ -92,7 +92,7 @@ proc expect*(cur: var SinglyLinkedNode[Token], op: TokenKind): string =
     doAssert token.kind == op
 
     cur = cur.next
-    return token.str.get
+    return token.lexeme.get
 
 proc at_eof*(cur: SinglyLinkedNode): bool =
     let token = cur[].value[]

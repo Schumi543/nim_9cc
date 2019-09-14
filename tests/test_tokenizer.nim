@@ -11,4 +11,4 @@ suite "tokenize":
         let t = tokenizer.tokenize(input, seps)
 
         # check t.head[].value of
-        check t.head[].value[].str == some("12")
+        check t.head[].value[].lexeme == some("12")
