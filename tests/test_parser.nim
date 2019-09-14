@@ -7,8 +7,8 @@ import unittest
 suite "parser":
     setup:
         let input: string = "12+23"
-        let simbols = {'+'}
-        var t = tokenize(input, simbols)
+        var lex = newLexer(input)
+        var t = lex.scanTokens()
         let node = expr(t.head)
 
     test "head is desirable":
