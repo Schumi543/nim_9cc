@@ -6,3 +6,4 @@ type TokenKind* = enum
   tkNum
   tkParenthesisL
   tkParenthesisR
+  tkEOF
