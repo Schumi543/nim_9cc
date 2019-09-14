@@ -4,8 +4,8 @@ import options
 
 suite "tokenize":
     setup:
-        let input = "12,23,34"
-        let seps = {','}
+        let input = "12+23+34"
+        let seps = {'+'}
 
     test "head is desirable":
         let t = tokenizer.tokenize(input, seps)
