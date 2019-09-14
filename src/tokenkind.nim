@@ -1,9 +1,9 @@
 type TokenKind* = enum
-  tkPlus
-  tkMinus
-  tkStar
-  tkSlash
+  tkPlus         # +
+  tkMinus        # -
+  tkStar         # *
+  tkSlash        # /
+  tkParenthesisL # (
+  tkParenthesisR # )
   tkNum
-  tkParenthesisL
-  tkParenthesisR
   tkEOF
