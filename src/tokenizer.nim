@@ -144,19 +144,19 @@ proc consume*(cur: var SinglyLinkedNode[Token], expected: TokenKind): bool =
         cur = cur.next
         return true
 
-# proc expectNumber*(cur: var SinglyLinkedNode[Token]): string =
-#     let token = cur[].value[]
+proc expectNumber*(cur: var SinglyLinkedNode[Token]): string =
+    let token = cur[].value[]
 
-#     doAssert(token.kind == tkNum, &"token is {token}")
+    doAssert(token.kind == tkNum, &"token is {token}")
 
-#     cur = cur.next
-#     return token.lexeme.get
+    cur = cur.next
+    return token.lexeme
 
-# proc expect*(cur: var SinglyLinkedNode[Token], op: TokenKind): string =
-#     let token = cur[].value[]
+proc expect*(cur: var SinglyLinkedNode[Token], op: TokenKind): string =
+    let token = cur[].value[]
 
-#     doAssert(token.kind != tkNum, &"token is {token}")
-#     doAssert token.kind == op
+    doAssert(token.kind != tkNum, &"token is {token}")
+    doAssert token.kind == op
 
-#     cur = cur.next
-#     return token.lexeme.get
+    cur = cur.next
+    return token.lexeme

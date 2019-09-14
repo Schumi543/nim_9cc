@@ -2,7 +2,7 @@ import os
 import strformat
 import strutils
 import tokenkind
-from tokenizer import tokenize, at_eof, expect_number, expect, consume, Token
+import tokenizer
 from parser import gen, expr
 import lists
 
@@ -18,9 +18,9 @@ when isMainModule:
   """
 
   let input: string = commandLineParams()[0].replace(" ", "")
+  var lex = tokenizer.newLexer(input)
 
-  let simbol = {'+', '-', '*', '/', '(', ')'}
-  let tokenized_input: SinglyLinkedList[Token] = tokenize(input, simbol)
+  let tokenized_input: SinglyLinkedList[Token] = lex.scanTokens()
   var cur: SinglyLinkedNode[Token] = tokenized_input.head
 
   let node = expr(cur)
