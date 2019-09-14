@@ -25,7 +25,7 @@ iterator tokenize(s: string, seps: set[char] = Whitespace): tuple[
             break
         i += j
 
-proc judge_token_kind(s: string): TokenKind =
+proc scanToken(s: string): TokenKind =
     case s:
         of "+":
             return tkPlus
@@ -45,8 +45,8 @@ proc judge_token_kind(s: string): TokenKind =
             else:
                 raise newException(ValueError, &"unexpected token: {s}")
 
-proc new_token(lexeme: string): Token =
-    return Token(kind: judge_token_kind(lexeme), lexeme: some(lexeme))
+proc newToken(lexeme: string): Token =
+    return Token(kind: scanToken(lexeme), lexeme: some(lexeme))
 
 
 proc tokenize*(input: string, simbols: set[char]): SinglyLinkedList[Token] =
@@ -69,7 +69,7 @@ proc consume*(cur: var SinglyLinkedNode[Token], expected: TokenKind): bool =
         cur = cur.next
         return true
 
-proc expect_number*(cur: var SinglyLinkedNode[Token]): string =
+proc expectNumber*(cur: var SinglyLinkedNode[Token]): string =
     let token = cur[].value[]
 
     doAssert(token.kind == tkNum, &"token is {token}")
@@ -86,6 +86,6 @@ proc expect*(cur: var SinglyLinkedNode[Token], op: TokenKind): string =
     cur = cur.next
     return token.lexeme.get
 
-proc at_eof*(cur: SinglyLinkedNode): bool =
+proc atEOF*(cur: SinglyLinkedNode): bool =
     let token = cur[].value[]
     return token.next.isNil
