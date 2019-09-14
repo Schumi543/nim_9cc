@@ -2,7 +2,7 @@ import tokenizer
 import strformat
 from strutils import parseInt, indent
 import lists
-import tokenkind
+import token, tokenkind
 
 type NodeKind = enum
   ndAdd

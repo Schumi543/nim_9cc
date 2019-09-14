@@ -2,6 +2,7 @@ import tokenizer
 import unittest
 import options
 import lists
+import token
 
 suite "lexer":
     setup:

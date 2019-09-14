@@ -3,14 +3,7 @@ from strutils import parseInt, replace, isDigit
 import strformat
 import options
 from system import newException
-import tokenkind
-
-type Token* = ref object of RootObj
-    kind: TokenKind
-    lexeme: string
-
-proc `$`*(tk: Token): string =
-    return &"[kind: {tk.kind}, lexeme: {tk.lexeme}]"
+import token, tokenkind
 
 type Lexer = ref object of RootObj
     source: string
