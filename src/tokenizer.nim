@@ -14,14 +14,13 @@ proc `$`*(tk: Token): string =
 
 type Lexer = ref object of RootObj
     source: string
-    tokens: seq[Token]
+    tokens: SinglyLinkedList[Token]
     start, current: int
 
 proc newLexer*(source: string): Lexer =
     # Create a new Lexer instance
     return Lexer(
         source: source,
-        tokens: @[],
         start: 0,
         current: 0,
     )
@@ -53,10 +52,10 @@ proc match(lex: var Lexer, expected: char): bool =
 
 template addToken(lex: var Lexer, tkKind: TokenKind) =
     # Add token along with metadata
-    lex.tokens.add(
-        Token(
-        kind: tkKind,
-        lexeme: lex.source[lex.start..lex.current-1]
+    lex.tokens.append(
+            Token(
+                kind: tkKind,
+                lexeme: lex.source[lex.start..lex.current-1]
         )
     )
 
@@ -105,14 +104,15 @@ proc scanToken(lex: var Lexer): TokenKind {.discardable.} =
                 raise newException(ValueError,
                         &"unexpected token: {lex.source[lex.start..lex.current]}")
 
-proc scanTokens*(lex: var Lexer): seq[Token] =
+proc scanTokens*(lex: var Lexer): SinglyLinkedList[Token] =
     # ScanTokens keeps scanning the source code untils it find the EOF delimiter.
     # It returns a seq of tokens that represents the entire source code.
+    lex.tokens = initSinglyLinkedList[Token]()
     while not lex.isAtEOF():
         lex.start = lex.current
         lex.scanToken()
     # EOF token
-    lex.tokens.add(
+    lex.tokens.append(
       Token(
         kind: tkEof,
         lexeme: ""
