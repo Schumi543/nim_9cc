@@ -7,11 +7,62 @@ import tokenkind
 
 type Token* = ref object of RootObj
     kind: TokenKind
-    lexeme*: Option[string] # accessible for test
+    lexeme*: string # accessible for test
+
+proc `$`*(tk: Token): string =
+    return &"[kind: {tk.kind}, lexeme: {tk.lexeme}]"
+
+type Lexer = ref object of RootObj
+    source: string
+    tokens: seq[Token]
+    start, current: int
+
+proc newLexer*(source: string): Lexer =
+    # Create a new Lexer instance
+    return Lexer(
+        source: source,
+        tokens: @[],
+        start: 0,
+        current: 0,
+    )
+
+proc isAtEOF(lex: Lexer): bool =
+    # Check if EOF reached
+    return lex.current >= lex.source.len
+
+proc advance(lex: var Lexer): char {.discardable.} =
+    # increment current
+    lex.current.inc()
+    return lex.source[lex.current-1]
+
+proc peek(lex: var Lexer): char =
+    # Returns the current char without moving to the next one
+    return if lex.isAtEOF(): '\0' else: lex.source[lex.current]
+
+proc peekNext(lex: var Lexer): char =
+    return if lex.current + 1 >= lex.source.len: '\0' else: lex.source[lex.current+1]
+
+proc match(lex: var Lexer, expected: char): bool =
+    result = true
+    if lex.isAtEOF() or lex.source[lex.current] != expected:
+        result = false
+    else:
+        # Match found and increment position.
+        # Group current & previous chars into a single tokenKind
+        lex.current.inc()
+
+template addToken(lex: var Lexer, tkKind: TokenKind) =
+    # Add token along with metadata
+    lex.tokens.add(
+        Token(
+        kind: tkKind,
+        lexeme: lex.source[lex.start..lex.current-1]
+        )
+    )
 
 const
     Whitespace* = {' ', '\t', '\v', '\r', '\l', '\f'}
-iterator tokenize(s: string, seps: set[char] = Whitespace): tuple[
+iterator tokenize*(s: string, seps: set[char] = Whitespace): tuple[
     token: string, isSep: bool] =
     var i = 0
     while true:
@@ -25,39 +76,63 @@ iterator tokenize(s: string, seps: set[char] = Whitespace): tuple[
             break
         i += j
 
-proc scanToken(s: string): TokenKind =
-    case s:
-        of "+":
-            return tkPlus
-        of "-":
-            return tkMinus
-        of "*":
-            return tkStar
-        of "/":
-            return tkSlash
-        of "(":
-            return tkParenthesisL
-        of ")":
-            return tkParenthesisR
+proc scanNumber(lex: var Lexer) =
+    while isDigit(lex.peek()): lex.advance()
+    if lex.peek() == '.' and isDigit(lex.peekNext()):
+        lex.advance()
+        while isDigit(lex.peek()): lex.advance()
+    lex.addToken(tkNum)
+
+proc scanToken(lex: var Lexer): TokenKind {.discardable.} =
+    let c: char = lex.advance()
+    case c:
+        of '+':
+            lex.addToken(tkPlus)
+        of '-':
+            lex.addToken(tkMinus)
+        of '*':
+            lex.addToken(tkStar)
+        of '/':
+            lex.addToken(tkSlash)
+        of '(':
+            lex.addToken(tkParenthesisL)
+        of ')':
+            lex.addToken(tkParenthesisR)
         else:
-            if isDigit(s): # FIXME isDigit is deprecated method
-                return tkNum
+            if isDigit(c): # FIXME isDigit is deprecated method
+                lex.scanNumber()
             else:
-                raise newException(ValueError, &"unexpected token: {s}")
+                raise newException(ValueError,
+                        &"unexpected token: {lex.source[lex.start..lex.current]}")
 
-proc newToken(lexeme: string): Token =
-    return Token(kind: scanToken(lexeme), lexeme: some(lexeme))
+proc scanTokens*(lex: var Lexer): seq[Token] =
+    # ScanTokens keeps scanning the source code untils it find the EOF delimiter.
+    # It returns a seq of tokens that represents the entire source code.
+    while not lex.isAtEOF():
+        lex.start = lex.current
+        lex.scanToken()
+    # EOF token
+    lex.tokens.add(
+      Token(
+        kind: tkEof,
+        lexeme: ""
+        )
+    )
+    return lex.tokens
+
+# proc newToken(lexeme: string): Token =
+#     return Token(kind: scanToken(lexeme), lexeme: lexeme)
 
 
-proc tokenize*(input: string, simbols: set[char]): SinglyLinkedList[Token] =
-    let trimmed_input = input.replace(" ", "")
-    var ret = initSinglyLinkedList[Token]()
-    for token in tokenize(trimmed_input, simbols):
-        var t = new_token(token.token)
-        var cur = newSinglyLinkedNode[Token](t)
-        ret.append(cur)
+# proc tokenize*(input: string, simbols: set[char]): SinglyLinkedList[Token] =
+#     let trimmed_input = input.replace(" ", "")
+#     var ret = initSinglyLinkedList[Token]()
+#     for token in tokenize(trimmed_input, simbols):
+#         var t = new_token(token.token)
+#         var cur = newSinglyLinkedNode[Token](t)
+#         ret.append(cur)
 
-    return ret
+#     return ret
 
 
 proc consume*(cur: var SinglyLinkedNode[Token], expected: TokenKind): bool =
@@ -69,23 +144,19 @@ proc consume*(cur: var SinglyLinkedNode[Token], expected: TokenKind): bool =
         cur = cur.next
         return true
 
-proc expectNumber*(cur: var SinglyLinkedNode[Token]): string =
-    let token = cur[].value[]
+# proc expectNumber*(cur: var SinglyLinkedNode[Token]): string =
+#     let token = cur[].value[]
 
-    doAssert(token.kind == tkNum, &"token is {token}")
+#     doAssert(token.kind == tkNum, &"token is {token}")
 
-    cur = cur.next
-    return token.lexeme.get
+#     cur = cur.next
+#     return token.lexeme.get
 
-proc expect*(cur: var SinglyLinkedNode[Token], op: TokenKind): string =
-    let token = cur[].value[]
+# proc expect*(cur: var SinglyLinkedNode[Token], op: TokenKind): string =
+#     let token = cur[].value[]
 
-    doAssert(token.kind != tkNum, &"token is {token}")
-    doAssert token.kind == op
+#     doAssert(token.kind != tkNum, &"token is {token}")
+#     doAssert token.kind == op
 
-    cur = cur.next
-    return token.lexeme.get
-
-proc atEOF*(cur: SinglyLinkedNode): bool =
-    let token = cur[].value[]
-    return token.next.isNil
+#     cur = cur.next
+#     return token.lexeme.get
