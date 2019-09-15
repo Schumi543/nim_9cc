@@ -5,5 +5,12 @@ type TokenKind* = enum
   tkSlash        # /
   tkParenthesisL # (
   tkParenthesisR # )
+  tkEQ           # ==
+  tkNE           # !=
+  tkLT           # <
+  tkLE           # <=
+  tkGT           # >
+  tkGE           # >=
   tkNum
   tkEOF
+  tkError        # for handle Error

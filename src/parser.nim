@@ -10,6 +10,12 @@ type NodeKind = enum
   ndMul
   ndDiv
   ndNum
+  ndEQ # ==
+  ndNE # !=
+  ndLT # <
+  ndLE # <=
+  ndGT # >
+  ndGE # >=
 
 type Node = ref object of RootObj
   kind: NodeKind
@@ -18,11 +24,47 @@ type Node = ref object of RootObj
   num: int
 
 proc expr*(cur: var SinglyLinkedNode[Token]): Node
+proc equality(cur: var SinglyLinkedNode[Token]): Node
+proc relational(cur: var SinglyLinkedNode[Token]): Node
+proc add(cur: var SinglyLinkedNode[Token]): Node
 proc mul(cur: var SinglyLinkedNode[Token]): Node
 proc unary(cur: var SinglyLinkedNode[Token]): Node
 proc primary(cur: var SinglyLinkedNode[Token]): Node
 
 proc expr*(cur: var SinglyLinkedNode[Token]): Node =
+  return cur.equality()
+
+proc equality(cur: var SinglyLinkedNode[Token]): Node =
+  var node = cur.relational()
+
+  while not cur.isNil:
+    if cur.consume(tkEQ):
+      node = Node(kind: ndEQ, lhs: node, rhs: cur.relational())
+    elif cur.consume(tkNE):
+      node = Node(kind: ndNE, lhs: node, rhs: cur.relational())
+    else:
+      return node
+
+  return node
+
+proc relational(cur: var SinglyLinkedNode[Token]): Node =
+  var node = cur.add()
+
+  while not cur.isNil:
+    if cur.consume(tkLT):
+      node = Node(kind: ndLT, lhs: node, rhs: cur.add())
+    elif cur.consume(tkLE):
+      node = Node(kind: ndLE, lhs: node, rhs: cur.add())
+    elif cur.consume(tkGT):
+      node = Node(kind: ndGT, lhs: node, rhs: cur.add())
+    elif cur.consume(tkGE):
+      node = Node(kind: ndLE, lhs: node, rhs: cur.add())
+    else:
+      return node
+
+  return node
+
+proc add(cur: var SinglyLinkedNode[Token]): Node =
   var node = cur.mul()
 
   while not cur.isNil:
@@ -88,6 +130,24 @@ proc gen*(node: Node): void =
     of ndDiv:
       echo "cqo".indent(6)
       echo "idiv rdi".indent(6)
+    of ndEQ:
+      echo "cmp rax, rdi".indent(6)
+      echo "sete al".indent(6)
+    of ndNE: # FIXME WET code
+      echo "cmp rax, rdi".indent(6)
+      echo "setne al".indent(6)
+    of ndLT:
+      echo "cmp rax, rdi".indent(6)
+      echo "setl al".indent(6)
+    of ndLE:
+      echo "cmp rax, rdi".indent(6)
+      echo "setle al".indent(6)
+    of ndGT:
+      echo "cmp rdi, rax".indent(6)
+      echo "setl al".indent(6)
+    of ndGE:
+      echo "cmp rdi, rax".indent(6)
+      echo "setle al".indent(6)
     of ndNum:
       echo ""
 

@@ -31,6 +31,13 @@ proc peek(lex: var Lexer): char =
 proc peekNext(lex: var Lexer): char =
     return if lex.current + 1 >= lex.source.len: '\0' else: lex.source[lex.current+1]
 
+proc match(lex: var Lexer, expected: char): bool =
+    if lex.isAtEOF() or lex.source[lex.current] != expected:
+        result = false
+    else:
+        result = true
+        lex.current.inc()
+
 template addToken(lex: var Lexer, tkKind: TokenKind) =
     # Add token along with metadata
     lex.tokens.append(
@@ -78,6 +85,14 @@ proc scanToken(lex: var Lexer): TokenKind {.discardable.} =
             lex.addToken(tkParenthesisL)
         of ')':
             lex.addToken(tkParenthesisR)
+        of '>':
+            lex.addToken(if lex.match('='): tkGE else: tkGT)
+        of '<':
+            lex.addToken(if lex.match('='): tkLE else: tkLT)
+        of '!':
+            lex.addToken(if lex.match('='): tkNE else: tkError)
+        of '=':
+            lex.addToken(if lex.match('='): tkEQ else: tkError)
         else:
             if isDigit(c): # FIXME isDigit is deprecated method
                 lex.scanNumber()
@@ -101,6 +116,9 @@ proc scanTokens*(lex: var Lexer): SinglyLinkedList[Token] =
 
 proc consume*(cur: var SinglyLinkedNode[Token], expected: TokenKind): bool =
     let token = cur[].value[]
+
+    if token.kind == tkError:
+        raise newException(ValueError, &"Appear unexpected token: {token}")
 
     if token.kind != expected:
         return false
