@@ -47,22 +47,6 @@ template addToken(lex: var Lexer, tkKind: TokenKind) =
         )
     )
 
-const
-    Whitespace* = {' ', '\t', '\v', '\r', '\l', '\f'}
-iterator tokenize*(s: string, seps: set[char] = Whitespace): tuple[
-    token: string, isSep: bool] =
-    var i = 0
-    while true:
-        var j = 0
-        var isSep = i+j < s.len and s[i+j] in seps
-        while i+j < s.len and (s[i+j] in seps) == isSep and (if isSep and j >
-                0: s[i+j] == s[i+j-1] else: true): inc(j)
-        if j > 0:
-            yield (substr(s, i, i+j-1), isSep)
-        else:
-            break
-        i += j
-
 proc scanNumber(lex: var Lexer) =
     while isDigit(lex.peek()): lex.advance()
     if lex.peek() == '.' and isDigit(lex.peekNext()):
