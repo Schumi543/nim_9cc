@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: nim:latest
+      - image: nimlang/nim:latest
 
     steps:
       - restore_cache:
