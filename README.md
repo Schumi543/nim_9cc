@@ -8,7 +8,7 @@ this project is still WIP
 ## TODO
 
 - [x] Four arithmetic operations and `()`
-- [x] Comparison operatot
+- [x] Comparison operator
 - [ ] [local variable](https://www.sigbus.info/compilerbook#%E3%82%B9%E3%83%86%E3%83%83%E3%83%9791%E6%96%87%E5%AD%97%E3%81%AE%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E5%A4%89%E6%95%B0)
 - [ ] function
   - [ ] [return statement](https://www.sigbus.info/compilerbook#%E3%82%B9%E3%83%86%E3%83%83%E3%83%9711return%E6%96%87)
