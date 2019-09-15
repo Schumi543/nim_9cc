@@ -2,8 +2,8 @@ import os
 import strformat
 import strutils
 import token, tokenkind
-import lexer
-from parser import gen, expr
+import lexer, codegen
+from parser import expr
 import lists
 
 when isMainModule:
