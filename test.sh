@@ -4,6 +4,7 @@ try() {
   expected="$2"
 
   ./src/nim_9cc "$input" >./tmp.asm
+  # TODO also support ubuntu for CI
   nasm -f macho64 tmp.asm -o tmp.o
   ld tmp.o -o tmp -macosx_version_min 10.13 -lSystem
   ./tmp
