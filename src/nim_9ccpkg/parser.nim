@@ -16,7 +16,7 @@ unary      = ("+" | "-")? primary
 primary    = num | "(" expr ")"
 ]#
 
-proc expr*(cur: var SinglyLinkedNode[Token]): Node
+proc expr(cur: var SinglyLinkedNode[Token]): Node
 proc equality(cur: var SinglyLinkedNode[Token]): Node
 proc relational(cur: var SinglyLinkedNode[Token]): Node
 proc add(cur: var SinglyLinkedNode[Token]): Node
