@@ -1,7 +1,7 @@
 import os
 import strutils
-import token
-import lexer, parser, codegen
+import nim_9ccpkg/lexer, nim_9ccpkg/parser, nim_9ccpkg/codegen,
+    nim_9ccpkg/token
 import lists
 
 when isMainModule:

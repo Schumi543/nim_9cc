@@ -1,8 +1,9 @@
 
-import parser
-import node, lexer
 import lists
 import unittest
+import nim_9ccpkg/node, nim_9ccpkg/lexer
+
+import nim_9ccpkg/parser
 
 suite "parser":
     setup:

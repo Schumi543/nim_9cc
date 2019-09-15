@@ -1,8 +1,9 @@
-import lexer
 import unittest
 import options
 import lists
-import token
+import nim_9ccpkg/token
+
+import nim_9ccpkg/lexer
 
 suite "lexer":
     setup:
