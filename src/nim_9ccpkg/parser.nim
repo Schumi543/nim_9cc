@@ -4,6 +4,17 @@ from strutils import parseInt, indent
 import lists
 import token, node
 
+#[
+EBNF
+
+expr       = equality
+equality   = relational ("==" relational | "!=" relational)*
+relational = add ("<" add | "<=" add | ">" add | ">=" add)*
+add        = mul ("+" mul | "-" mul)*
+mul        = unary ("*" unary | "/" unary)*
+unary      = ("+" | "-")? primary
+primary    = num | "(" expr ")"
+]#
 
 proc expr*(cur: var SinglyLinkedNode[Token]): Node
 proc equality(cur: var SinglyLinkedNode[Token]): Node
