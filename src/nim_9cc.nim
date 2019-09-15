@@ -1,7 +1,7 @@
 import os
 import strformat
 import strutils
-import token, tokenkind
+import token
 import lexer, codegen
 from parser import expr
 import lists

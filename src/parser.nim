@@ -2,8 +2,8 @@ import lexer
 import strformat
 from strutils import parseInt, indent
 import lists
-import token, tokenkind
-import node
+import token, node
+
 
 proc expr*(cur: var SinglyLinkedNode[Token]): Node
 proc equality(cur: var SinglyLinkedNode[Token]): Node

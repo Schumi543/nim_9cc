@@ -3,7 +3,7 @@ from strutils import parseInt, replace, isDigit
 import strformat
 import options
 from system import newException
-import token, tokenkind
+import token
 
 type Lexer = ref object of RootObj
     source: string
