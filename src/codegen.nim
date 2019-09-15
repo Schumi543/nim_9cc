@@ -2,7 +2,23 @@ from strutils import indent
 import strformat
 import node
 
-proc gen*(node: Node): void =
+proc gen*(node: Node): void
+
+proc exec*(node: Node): void =
+    echo &"""
+  global _main
+  
+  section .text
+      _main:
+    """
+
+    gen(node)
+
+    echo "pop rax".indent(6)
+    echo "ret".indent(2)
+
+proc gen(node: Node): void =
+
     if node.kind == ndNum:
         echo (&"push {node.num}").indent(6)
 
