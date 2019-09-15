@@ -13,7 +13,11 @@ proc mul(cur: var SinglyLinkedNode[Token]): Node
 proc unary(cur: var SinglyLinkedNode[Token]): Node
 proc primary(cur: var SinglyLinkedNode[Token]): Node
 
-proc expr*(cur: var SinglyLinkedNode[Token]): Node =
+proc exec*(tokens: SinglyLinkedList[Token]): Node =
+  var cur: SinglyLinkedNode[Token] = tokens.head
+  return cur.expr()
+
+proc expr(cur: var SinglyLinkedNode[Token]): Node =
   return cur.equality()
 
 proc equality(cur: var SinglyLinkedNode[Token]): Node =

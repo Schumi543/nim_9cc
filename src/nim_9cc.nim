@@ -2,8 +2,7 @@ import os
 import strformat
 import strutils
 import token
-import lexer, codegen
-from parser import expr
+import lexer, parser, codegen
 import lists
 
 when isMainModule:
@@ -20,10 +19,8 @@ when isMainModule:
   let input: string = commandLineParams()[0].replace(" ", "")
   var lex = newLexer(input)
 
-  let tokenized_input: SinglyLinkedList[Token] = lex.scanTokens()
-  var cur: SinglyLinkedNode[Token] = tokenized_input.head
-
-  let node = expr(cur)
+  let tokens: SinglyLinkedList[Token] = lex.scanTokens()
+  let node = parser.exec(tokens)
   node.gen()
 
   echo "pop rax".indent(6)
