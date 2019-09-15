@@ -4,7 +4,6 @@ jobs:
     docker:
       - image: nim:latest
 
-  nimble_test:
     steps:
       - restore_cache:
           keys:
